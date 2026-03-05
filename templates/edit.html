@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Workout</title>
+</head>
+<body>
+
+<h2>Edit Workout</h2>
+
+<form method="POST">
+    Exercise:<br>
+    <input type="text" name="exercise" value="{{ workout[2] }}" required><br><br>
+
+    Duration:<br>
+    <input type="text" name="duration" value="{{ workout[3] }}" required><br><br>
+
+    Calories:<br>
+    <input type="number" name="calories" value="{{ workout[4] }}" required><br><br>
+
+    <button type="submit">Update Workout</button>
+</form>
+
+<br>
+<a href="/dashboard">Back</a>
+
+</body>
+</html>

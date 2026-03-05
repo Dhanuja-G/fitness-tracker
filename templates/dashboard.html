@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>Welcome {{ name }} 💚</h2>
+
+<div class="card">Total Calories<br><b>{{ total }}</b></div>
+<div class="card">This Month<br><b>{{ monthly }}</b></div>
+<div class="card">This Week<br><b>{{ weekly }}</b></div>
+
+<h2>Add Workout</h2>
+
+<form method="POST">
+    <input type="text" name="exercise" placeholder="Exercise" required>
+    <input type="number" name="duration" placeholder="Duration" required>
+    <input type="number" name="calories" placeholder="Calories" required>
+    <input type="date" name="date" required>
+    <button type="submit">Add Workout</button>
+</form>
+
+<h2>Your Workouts</h2>
+
+<table border="1">
+<tr>
+<th>Exercise</th>
+<th>Duration</th>
+<th>Calories</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+
+{% for workout in workouts %}
+<tr>
+<td>{{ workout["exercise"] }}</td>
+<td>{{ workout["duration"] }}</td>
+<td>{{ workout["calories"] }}</td>
+<td>{{ workout["date"] }}</td>
+<td><a href="/delete/{{ workout['id'] }}">Delete</a></td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<a href="/graph"><button>View Graph</button></a>
+<br><br>
+<a href="/logout">Logout</a>
+
+</body>
+</html>
