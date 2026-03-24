@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -8,9 +9,11 @@
 
 <h2>Welcome {{ name }} 💚</h2>
 
+<div class="cards">
 <div class="card">Total Calories<br><b>{{ total }}</b></div>
 <div class="card">This Month<br><b>{{ monthly }}</b></div>
 <div class="card">This Week<br><b>{{ weekly }}</b></div>
+</div>
 
 <h2>Add Workout</h2>
 
@@ -45,7 +48,7 @@
 </table>
 
 <br>
-<a href="/graph"><button>View Graph</button></a>
+<a href="/graph"><button type="button">View Graph</button></a>
 <br><br>
 <a href="/logout">Logout</a>
 

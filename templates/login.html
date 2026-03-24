@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -14,7 +15,7 @@
 <form method="POST">
     <input type="email" name="email" placeholder="Enter Email" required><br>
     <input type="password" name="password" placeholder="Enter Password" required><br>
-    <button type="submit">Login</button>
+    <button type="submit" class="btn">Login</button>
 </form>
 
 <p>Don't have an account?

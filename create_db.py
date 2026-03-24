@@ -1,31 +1,48 @@
-import sqlite3
+import os
 
-con = sqlite3.connect("fitness.db")
+import mysql.connector
+
+DB_CONFIG = {
+    "host": os.getenv("MYSQL_HOST", "localhost"),
+    "port": int(os.getenv("MYSQL_PORT", "3306")),
+    "user": os.getenv("MYSQL_USER", "root"),
+    "password": os.getenv("MYSQL_PASSWORD", ""),
+}
+
+DATABASE_NAME = os.getenv("MYSQL_DB", "fitness_tracker")
+
+con = mysql.connector.connect(**DB_CONFIG)
 cur = con.cursor()
 
-# USERS TABLE
-cur.execute("""
-CREATE TABLE IF NOT EXISTS users(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT,
-email TEXT,
-password TEXT
-)
-""")
+cur.execute(f"CREATE DATABASE IF NOT EXISTS `{DATABASE_NAME}`")
+cur.execute(f"USE `{DATABASE_NAME}`")
 
-# FITNESS TABLE WITH DATE
-cur.execute("""
-CREATE TABLE IF NOT EXISTS fitness(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT,
-exercise TEXT,
-duration TEXT,
-calories INTEGER,
-date TEXT
+cur.execute(
+    """
+    CREATE TABLE IF NOT EXISTS users(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL
+    )
+    """
 )
-""")
+
+cur.execute(
+    """
+    CREATE TABLE IF NOT EXISTS fitness(
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_email VARCHAR(255) NOT NULL,
+        exercise VARCHAR(100) NOT NULL,
+        duration INT NOT NULL,
+        calories INT NOT NULL,
+        date DATE NOT NULL
+    )
+    """
+)
 
 con.commit()
+cur.close()
 con.close()
 
-print("Database Created Successfully")
+print("MySQL database and tables created successfully")

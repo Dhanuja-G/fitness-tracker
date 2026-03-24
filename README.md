@@ -1,6 +1,6 @@
-# Fitness Tracker Web Application
+﻿# Fitness Tracker Web Application
 
-A simple web application to track daily workouts and calories burned.  
+A simple web application to track daily workouts and calories burned.
 Users can log exercises, view workout history, and analyze calories using weekly and monthly graphs.
 
 ## Technologies Used
@@ -8,7 +8,7 @@ Users can log exercises, view workout history, and analyze calories using weekly
 - Flask
 - HTML
 - CSS
-- SQLite
+- MySQL
 - Chart.js
 
 ## Features
@@ -22,46 +22,57 @@ Users can log exercises, view workout history, and analyze calories using weekly
 - Logout Option
 
 ## Project Structure
-fitness_tracker/
-│
-├── app.py
-├── fitness.db
-├── templates/
-│   └── index.html
-├── static/
-│   └── style.css
-└── README.md
+fitness-tracker/
+|-- app.py
+|-- create_db.py
+|-- templates/
+|-- static/
+`-- README.md
 
 ## How to Run the Project
 
 1. Clone the repository
 
+```bash
 git clone https://github.com/SudhaReddy9676/fitness-tracker.git
-
-2. Go to the project folder
-
 cd fitness-tracker
+```
 
-3. Create virtual environment
+2. Create and activate a virtual environment
 
+```powershell
 python -m venv venv
-
-4. Activate virtual environment
-
-Windows:
 venv\Scripts\activate
+```
 
-5. Install Flask
+3. Install dependencies
 
-pip install flask
+```powershell
+pip install -r requirements.txt
+```
+
+4. Set your MySQL connection details
+
+```powershell
+$env:MYSQL_HOST="localhost"
+$env:MYSQL_PORT="3306"
+$env:MYSQL_USER="root"
+$env:MYSQL_PASSWORD="your_password"
+$env:MYSQL_DB="fitness_tracker"
+```
+
+5. Create the database and tables
+
+```powershell
+python create_db.py
+```
 
 6. Run the application
 
+```powershell
 python app.py
+```
 
 7. Open in browser
 
-http://127.0.0.1:5000/
-
-## Author
-VADUGURU CHANDRA SUDHA
+`http://127.0.0.1:5000/`
