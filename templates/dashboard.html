@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-<h2>Welcome {{ name }} 💚</h2>
+<div class="page-shell">
+<h2>Welcome {{ name }}</h2>
 
 <div class="cards">
 <div class="card">Total Calories<br><b>{{ total }}</b></div>
@@ -17,7 +17,7 @@
 
 <h2>Add Workout</h2>
 
-<form method="POST">
+<form method="POST" class="dashboard-form">
     <input type="text" name="exercise" placeholder="Exercise" required>
     <input type="number" name="duration" placeholder="Duration" required>
     <input type="number" name="calories" placeholder="Calories" required>
@@ -47,10 +47,10 @@
 {% endfor %}
 </table>
 
-<br>
+<div class="page-actions">
 <a href="/graph"><button type="button">View Graph</button></a>
-<br><br>
 <a href="/logout">Logout</a>
-
+</div>
+</div>
 </body>
 </html>

@@ -5,29 +5,40 @@
     <title>Sign Up - Fitness Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="auth-shell">
+<div class="auth-frame">
+    <section class="auth-visual" style="--auth-image: url('/images/login.jpg');">
+        <div class="auth-visual-content">
+            <span class="auth-kicker">Strong Start</span>
+            <h1>Start your fitness journey in style.</h1>
+            <p>
+                Keep workouts, calories, and consistency together in a bright,
+                modern experience built to keep you engaged.
+            </p>
+        </div>
+    </section>
 
-<div class="auth-container">
-    <h2 class="form-title">Create Account</h2>
-    <p class="subtitle">Start your fitness journey today 💜</p>
+    <section class="auth-panel">
+        <div class="auth-card">
+            <h2>Create account</h2>
+            <p class="subtitle">A fresh profile is all you need to begin.</p>
 
-    <form method="POST">
-        <label>Name</label>
-        <input type="text" name="name" required>
+            <form method="POST">
+                <label for="signup-name">Name</label>
+                <input id="signup-name" type="text" name="name" placeholder="Enter your name" required>
 
-        <label>Email</label>
-        <input type="email" name="email" required>
+                <label for="signup-email">Email</label>
+                <input id="signup-email" type="email" name="email" placeholder="Enter your email" required>
 
-        <label>Password</label>
-        <input type="password" name="password" required>
+                <label for="signup-password">Password</label>
+                <input id="signup-password" type="password" name="password" placeholder="Create a password" required>
 
-        <button type="submit" class="btn">Sign Up</button>
-    </form>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
 
-    <p class="link-text">
-        Already have an account? <a href="/login">Login</a>
-    </p>
+            <p class="auth-footer">Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </section>
 </div>
-
 </body>
 </html>

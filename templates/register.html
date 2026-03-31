@@ -5,23 +5,56 @@
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-
-<h1>Welcome to Fitness Tracker 💚</h1>
-
-<div class="box">
-<h2>Create Account</h2>
-
-<form method="POST">
-    <input type="text" name="name" placeholder="Enter Name" required><br>
-    <input type="email" name="email" placeholder="Enter Email" required><br>
-    <input type="password" name="password" placeholder="Enter Password" required><br>
-    <button type="submit" class="btn">Register</button>
-</form>
-
-<p>Already have an account?
-<a href="/login">Login Here</a></p>
+<body class="auth-page">
+<div class="auth-nav">
+    <div class="auth-brand">Fitness Tracker</div>
+    <div class="auth-menu">
+        <a href="/">REGISTER</a>
+        <a href="/login">LOGIN</a>
+        <a href="/dashboard">DASHBOARD</a>
+        <a href="/graph">PROGRESS</a>
+        <a href="/login" class="auth-nav-button">LOGIN</a>
+    </div>
 </div>
 
+<div class="auth-landscape">
+    <div class="bird bird-left"></div>
+    <div class="bird bird-right"></div>
+    <div class="mountain mountain-1"></div>
+    <div class="mountain mountain-2"></div>
+    <div class="mountain mountain-3"></div>
+    <div class="mountain mountain-4"></div>
+    <div class="mountain mountain-5"></div>
+</div>
+
+<div class="auth-stage">
+    <div class="auth-card">
+        <h2>REGISTER</h2>
+
+        <form method="POST" class="auth-form">
+            <div class="auth-field">
+                <label for="name">Name</label>
+                <input id="name" class="auth-line-input" type="text" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="email">Email</label>
+                <input id="email" class="auth-line-input" type="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="password">Password</label>
+                <input id="password" class="auth-line-input" type="password" name="password" placeholder="Create your password" required>
+            </div>
+
+            <button type="submit" class="btn">Create Account</button>
+        </form>
+
+        <p class="auth-footer">
+            <span>Already have an Account?</span>
+            <a href="/login">Login</a>
+        </p>
+    </div>
+</div>
 </body>
 </html>

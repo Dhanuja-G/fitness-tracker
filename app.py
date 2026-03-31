@@ -1,24 +1,20 @@
-import os
+import sqlite3
 from datetime import datetime, timedelta
+from pathlib import Path
 
-import mysql.connector
-from flask import Flask, redirect, render_template, request, session
-from mysql.connector import Error
+from flask import Flask, redirect, render_template, request, send_from_directory, session
 
 app = Flask(__name__)
 app.secret_key = "fitness_secret_key"
 
-DB_CONFIG = {
-    "host": os.getenv("MYSQL_HOST", "localhost"),
-    "port": int(os.getenv("MYSQL_PORT", "3306")),
-    "user": os.getenv("MYSQL_USER", "root"),
-    "password": os.getenv("MYSQL_PASSWORD", ""),
-    "database": os.getenv("MYSQL_DB", "fitness_tracker"),
-}
+DB_PATH = Path(__file__).with_name("fitness.db")
+IMAGE_DIR = Path(__file__).with_name("IMAGES")
 
 
 def get_connection():
-    return mysql.connector.connect(**DB_CONFIG)
+    con = sqlite3.connect(DB_PATH)
+    con.row_factory = sqlite3.Row
+    return con
 
 
 def create_tables():
@@ -28,10 +24,10 @@ def create_tables():
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS users(
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(255) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
         )
         """
     )
@@ -39,12 +35,12 @@ def create_tables():
     cur.execute(
         """
         CREATE TABLE IF NOT EXISTS fitness(
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_email VARCHAR(255) NOT NULL,
-            exercise VARCHAR(100) NOT NULL,
-            duration INT NOT NULL,
-            calories INT NOT NULL,
-            date DATE NOT NULL
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_email TEXT NOT NULL,
+            exercise TEXT NOT NULL,
+            duration INTEGER NOT NULL,
+            calories INTEGER NOT NULL,
+            date TEXT NOT NULL
         )
         """
     )
@@ -54,10 +50,12 @@ def create_tables():
     con.close()
 
 
-try:
-    create_tables()
-except Error as err:
-    print(f"MySQL setup failed: {err}")
+create_tables()
+
+
+@app.route("/images/<path:filename>")
+def images(filename):
+    return send_from_directory(IMAGE_DIR, filename)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -68,15 +66,15 @@ def register():
         password = request.form["password"]
 
         con = get_connection()
-        cur = con.cursor(dictionary=True)
+        cur = con.cursor()
         try:
             cur.execute(
-                "INSERT INTO users(name, email, password) VALUES(%s, %s, %s)",
+                "INSERT INTO users(name, email, password) VALUES(?, ?, ?)",
                 (name, email, password),
             )
             con.commit()
             return redirect("/login")
-        except Error:
+        except sqlite3.IntegrityError:
             return "Email already exists!"
         finally:
             cur.close()
@@ -92,9 +90,9 @@ def login():
         password = request.form["password"]
 
         con = get_connection()
-        cur = con.cursor(dictionary=True)
+        cur = con.cursor()
         cur.execute(
-            "SELECT * FROM users WHERE email=%s AND password=%s",
+            "SELECT * FROM users WHERE email=? AND password=?",
             (email, password),
         )
         user = cur.fetchone()
@@ -119,7 +117,7 @@ def dashboard():
     email = session["email"]
 
     con = get_connection()
-    cur = con.cursor(dictionary=True)
+    cur = con.cursor()
 
     if request.method == "POST":
         exercise = request.form["exercise"]
@@ -130,35 +128,39 @@ def dashboard():
         cur.execute(
             """
             INSERT INTO fitness(user_email, exercise, duration, calories, date)
-            VALUES(%s, %s, %s, %s, %s)
+            VALUES(?, ?, ?, ?, ?)
             """,
             (email, exercise, duration, calories, date),
         )
         con.commit()
 
     cur.execute(
-        "SELECT * FROM fitness WHERE user_email=%s ORDER BY date DESC",
+        "SELECT * FROM fitness WHERE user_email=? ORDER BY date DESC",
         (email,),
     )
     workouts = cur.fetchall()
 
     cur.execute(
-        "SELECT SUM(calories) AS total_calories FROM fitness WHERE user_email=%s",
+        "SELECT SUM(calories) AS total_calories FROM fitness WHERE user_email=?",
         (email,),
     )
-    total_row = cur.fetchone() or {}
-    total = total_row.get("total_calories") or 0
+    total_row = cur.fetchone()
+    total = total_row["total_calories"] if total_row and total_row["total_calories"] else 0
 
     current_month = datetime.now().strftime("%Y-%m")
     cur.execute(
         """
         SELECT SUM(calories) AS monthly_calories FROM fitness
-        WHERE user_email=%s AND DATE_FORMAT(date, '%%Y-%%m') = %s
+        WHERE user_email=? AND substr(date, 1, 7) = ?
         """,
         (email, current_month),
     )
-    monthly_row = cur.fetchone() or {}
-    monthly = monthly_row.get("monthly_calories") or 0
+    monthly_row = cur.fetchone()
+    monthly = (
+        monthly_row["monthly_calories"]
+        if monthly_row and monthly_row["monthly_calories"]
+        else 0
+    )
 
     today = datetime.now()
     start_week = today - timedelta(days=today.weekday())
@@ -167,7 +169,7 @@ def dashboard():
     cur.execute(
         """
         SELECT SUM(calories) AS weekly_calories FROM fitness
-        WHERE user_email=%s AND date BETWEEN %s AND %s
+        WHERE user_email=? AND date BETWEEN ? AND ?
         """,
         (
             email,
@@ -175,8 +177,12 @@ def dashboard():
             end_week.strftime("%Y-%m-%d"),
         ),
     )
-    weekly_row = cur.fetchone() or {}
-    weekly = weekly_row.get("weekly_calories") or 0
+    weekly_row = cur.fetchone()
+    weekly = (
+        weekly_row["weekly_calories"]
+        if weekly_row and weekly_row["weekly_calories"]
+        else 0
+    )
 
     cur.close()
     con.close()
@@ -198,12 +204,12 @@ def graph():
 
     email = session["email"]
     con = get_connection()
-    cur = con.cursor(dictionary=True)
+    cur = con.cursor()
 
     cur.execute(
         """
         SELECT date, calories FROM fitness
-        WHERE user_email=%s ORDER BY date
+        WHERE user_email=? ORDER BY date
         """,
         (email,),
     )
@@ -211,7 +217,7 @@ def graph():
     cur.close()
     con.close()
 
-    dates = [row["date"].strftime("%Y-%m-%d") for row in data]
+    dates = [row["date"] for row in data]
     calories = [row["calories"] for row in data]
 
     return render_template("graph.html", dates=dates, calories=calories)
@@ -225,7 +231,7 @@ def delete(id):
     con = get_connection()
     cur = con.cursor()
     cur.execute(
-        "DELETE FROM fitness WHERE id=%s AND user_email=%s",
+        "DELETE FROM fitness WHERE id=? AND user_email=?",
         (id, session["email"]),
     )
     con.commit()

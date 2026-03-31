@@ -8,7 +8,7 @@ Users can log exercises, view workout history, and analyze calories using weekly
 - Flask
 - HTML
 - CSS
-- MySQL
+- SQLite
 - Chart.js
 
 ## Features
@@ -51,28 +51,18 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Set your MySQL connection details
-
-```powershell
-$env:MYSQL_HOST="localhost"
-$env:MYSQL_PORT="3306"
-$env:MYSQL_USER="root"
-$env:MYSQL_PASSWORD="your_password"
-$env:MYSQL_DB="fitness_tracker"
-```
-
-5. Create the database and tables
+4. Create the database and tables
 
 ```powershell
 python create_db.py
 ```
 
-6. Run the application
+5. Run the application
 
 ```powershell
 python app.py
 ```
 
-7. Open in browser
+6. Open in browser
 
 `http://127.0.0.1:5000/`
