@@ -5,52 +5,95 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-<div class="page-shell">
-<h2>Welcome {{ name }}</h2>
+<body class="dashboard-page">
+<div class="dashboard-shell">
+    <header class="dashboard-topbar">
+        <div>
+            <p class="dashboard-eyebrow">Fitness Tracker</p>
+            <h1>Welcome back, {{ name }}</h1>
+            <p class="dashboard-subtitle">Track workouts, monitor progress, and stay consistent with your routine.</p>
+        </div>
+        <div class="dashboard-top-actions">
+            <a href="/graph" class="secondary-action">View Progress</a>
+            <a href="/logout" class="ghost-action">Logout</a>
+        </div>
+    </header>
 
-<div class="cards">
-<div class="card">Total Calories<br><b>{{ total }}</b></div>
-<div class="card">This Month<br><b>{{ monthly }}</b></div>
-<div class="card">This Week<br><b>{{ weekly }}</b></div>
-</div>
+    <section class="dashboard-hero">
+        <div class="hero-copy">
+            <span class="hero-badge">Daily performance overview</span>
+            <h2>Build a healthier routine with simple, measurable workout logging.</h2>
+            <p>Your dashboard gives you a quick snapshot of calories burned and keeps every recent workout in one place.</p>
+        </div>
 
-<h2>Add Workout</h2>
+        <div class="cards dashboard-cards">
+            <article class="card stat-card">
+                <span class="stat-label">Total Calories</span>
+                <strong class="stat-value">{{ total }}</strong>
+                <span class="stat-note">All recorded sessions</span>
+            </article>
+            <article class="card stat-card">
+                <span class="stat-label">This Month</span>
+                <strong class="stat-value">{{ monthly }}</strong>
+                <span class="stat-note">Calories burned this month</span>
+            </article>
+            <article class="card stat-card">
+                <span class="stat-label">This Week</span>
+                <strong class="stat-value">{{ weekly }}</strong>
+                <span class="stat-note">Calories burned this week</span>
+            </article>
+        </div>
+    </section>
 
-<form method="POST" class="dashboard-form">
-    <input type="text" name="exercise" placeholder="Exercise" required>
-    <input type="number" name="duration" placeholder="Duration" required>
-    <input type="number" name="calories" placeholder="Calories" required>
-    <input type="date" name="date" required>
-    <button type="submit">Add Workout</button>
-</form>
+    <section class="dashboard-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">Quick Add</p>
+                <h2>Add a new workout</h2>
+            </div>
+            <p class="panel-copy">Log exercise name, duration, calories, and session date.</p>
+        </div>
 
-<h2>Your Workouts</h2>
+        <form method="POST" class="dashboard-form">
+            <input type="text" name="exercise" placeholder="Exercise name" required>
+            <input type="number" name="duration" placeholder="Duration in minutes" required>
+            <input type="number" name="calories" placeholder="Calories burned" required>
+            <input type="date" name="date" required>
+            <button type="submit">Add Workout</button>
+        </form>
+    </section>
 
-<table border="1">
-<tr>
-<th>Exercise</th>
-<th>Duration</th>
-<th>Calories</th>
-<th>Date</th>
-<th>Action</th>
-</tr>
+    <section class="dashboard-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">History</p>
+                <h2>Your recent workouts</h2>
+            </div>
+            <p class="panel-copy">A clear record of every entry you have logged so far.</p>
+        </div>
 
-{% for workout in workouts %}
-<tr>
-<td>{{ workout["exercise"] }}</td>
-<td>{{ workout["duration"] }}</td>
-<td>{{ workout["calories"] }}</td>
-<td>{{ workout["date"] }}</td>
-<td><a href="/delete/{{ workout['id'] }}">Delete</a></td>
-</tr>
-{% endfor %}
-</table>
+        <div class="table-wrap">
+            <table class="workout-table">
+                <tr>
+                    <th>Exercise</th>
+                    <th>Duration</th>
+                    <th>Calories</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
 
-<div class="page-actions">
-<a href="/graph"><button type="button">View Graph</button></a>
-<a href="/logout">Logout</a>
-</div>
+                {% for workout in workouts %}
+                <tr>
+                    <td>{{ workout["exercise"] }}</td>
+                    <td>{{ workout["duration"] }} min</td>
+                    <td>{{ workout["calories"] }}</td>
+                    <td>{{ workout["date"] }}</td>
+                    <td><a href="/delete/{{ workout['id'] }}" class="delete-link">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
 </div>
 </body>
 </html>
