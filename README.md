@@ -8,7 +8,8 @@ Users can log exercises, view workout history, and analyze calories using weekly
 - Flask
 - HTML
 - CSS
-- SQLite
+- MySQL
+- MySQL Workbench
 - Chart.js
 
 ## Features
@@ -51,18 +52,38 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Create the database and tables
+4. Create a MySQL connection in MySQL Workbench
+
+- Open MySQL Workbench
+- Click `+` next to `MySQL Connections`
+- Set:
+  - Hostname: `localhost`
+  - Port: `3306`
+  - Username: `root` (or your MySQL username)
+- Click `Store in Vault...` or enter your password when prompted
+- Test the connection and save it
+
+5. Set your MySQL environment variables in PowerShell
+
+```powershell
+$env:MYSQL_HOST="localhost"
+$env:MYSQL_USER="root"
+$env:MYSQL_PASSWORD="your_mysql_password"
+$env:MYSQL_DATABASE="fitness_tracker"
+```
+
+6. Create the database and tables
 
 ```powershell
 python create_db.py
 ```
 
-5. Run the application
+7. Run the application
 
 ```powershell
 python app.py
 ```
 
-6. Open in browser
+8. Open in browser
 
 `http://127.0.0.1:5000/`
